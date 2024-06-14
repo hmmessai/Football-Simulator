@@ -16,9 +16,15 @@ print(comp._registrationDone())
 
 comp.generateMatches()
 
-team.points = 48
-team2.points = 48
-team2.goals = 4
+for i in range(38):
+    for i in comp.getWeekSchedule():
+        results = i.getresult()
+        score = Score(i.home, i.away, results)
+        print(score)
+        score.giveGoal()
+        score.givePoints()
+
+
 table = comp.getTable(True)
 print(table)
 # for team in comp.teams:

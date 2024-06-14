@@ -32,7 +32,7 @@ class Team(Base):
         self.points = 0
         self.goals = 0
         try:
-            if self.name:
+            if self.name and not self.abv_name:
                 self.abv_name = self.name[:3].upper()
         except Exception:
             self.name = f"New Team {Team.count}"

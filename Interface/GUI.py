@@ -1,8 +1,8 @@
-#!env/bin/python3
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from screeninfo import get_monitors
+# from screeninfo import get_monitors
 import sys
 
 sys.path.append('')
@@ -11,9 +11,9 @@ from Welcome import Welcome
 from TeamInfo import TeamInfo
 
 
-monnitor = get_monitors()[0]
-screen_width = monnitor.width
-screen_height = monnitor.height
+#monnitor = get_monitors()[0]
+screen_width = 600#monnitor.width
+screen_height = 400#monnitor.height
 
 window_width = 800
 window_height = 600
@@ -30,7 +30,7 @@ class MainApplication(tk.Tk):
         super().__init__()
         
         self.title("Football Simulation")
-        self.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        self.geometry(f"{window_width}x{window_height}")
         self.config(background="#bd3102")
         
         # Create a container frame

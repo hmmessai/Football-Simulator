@@ -13,10 +13,6 @@ class TeamInfo(tk.Frame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-
-        ##Title##
-        title = tk.Label(self, text="Team Information", font=('Arial', 20))
-        title.grid(row=0, column=0)
         
         ##Dashboard##
         self.dashboard = tk.Frame(self, bd=2, relief="groove", highlightbackground="black")
@@ -36,29 +32,58 @@ class TeamInfo(tk.Frame):
         label4.grid(row=3, column=0, sticky='nsew')
 
         ##Content##
+
+        
         self.content = tk.Frame(self)
         self.content.grid(row=1, column=1, sticky="nw")
 
-        label = tk.Label(self.content, text="This is Team Info")
-        label.grid(row=0, column=0, pady=10, padx=10)
+        title = tk.Label(self.content, text="Team Registration", font=('Arial', 20))
+        title.grid(row=0, column=0, columnspan=5)
+
+        label = tk.Label(self.content, text="Please enter the required information to register your team of desire. This step will register your team into our database for you to play oour simulation.")
+        label.grid(row=1, column=0, columnspan=5, pady=10, padx=10)
+        label.config(wraplength=600)
 
         name_label = tk.Label(self.content, text="Name of team")
-        name_label.grid(row=1, column=0, pady=10, padx=10)
-        self.name = tk.Entry(self.content)
-        self.name.grid(row=1, column=1)
+        name_label.grid(row=2, column=0, pady=10, padx=10)
+        self.name = tk.Entry(self.content, width=40)
+        self.name.grid(row=2, column=1, sticky='w')
+        self.name_error = tk.Label(self.content)
+        self.name_error.grid(row=2, column=2, sticky='w')
+
+        abbr_label = tk.Label(self.content, text="Abbreviated Name")
+        abbr_label.grid(row=3, column=0, pady=10, padx=10)
+        self.abbrv_name = tk.Entry(self.content)
+        self.abbrv_name.grid(row=3, column=1, sticky='w')
+        self.abv_error = tk.Label(self.content)
+        self.abv_error.grid(row=2, column=2, sticky='w')
+
+        year_label = tk.Label(self.content, text="Year founded")
+        year_label.grid(row=4, column=0, pady=10, padx=10)
+        self.year = tk.Entry(self.content)
+        self.year.grid(row=4, column=1, sticky='w')
+        self.year_error = tk.Label(self.content)
+        self.year_error.grid(row=2, column=2, sticky='w')
+
+        colors_label = tk.Label(self.content, text="Colors")
+        colors_label.grid(row=5, column=0, pady=10, padx=10)
+        self.colors = tk.Entry(self.content)
+        self.colors.grid(row=5, column=1, sticky='w')
+        self.colors_error = tk.Label(self.content)
+        self.colors_error.grid(row=2, column=2, sticky='w')
         
         add_team_btn = tk.Button(self.content, text="Add Team", 
                            command=self.add_team)
-        add_team_btn.grid(row=2, column=0, padx=10, pady=10)
+        add_team_btn.grid(row=8, column=0, padx=10, pady=10)
         browse_team_btn = tk.Button(self.content, text="Browse Existing Teams", 
                            command=self.show_existing_teams)
-        browse_team_btn.grid(row=2, column=1, padx=10, pady=10)
+        browse_team_btn.grid(row=8, column=1, padx=10, pady=10)
 
-        self.teams_container = tk.Listbox(self.content)
-        self.teams_container.grid(row=3, column=0)
+        self.teams_container = tk.Listbox(self.content, width=30)
+        self.teams_container.grid(row=9, column=0, columnspan=2, padx=10, pady=10, sticky='w')
 
-        self.selected_teams = tk.Listbox(self.content)
-        self.selected_teams.grid(row=3, column=1)
+        self.team_info = tk.Listbox(self.content, width=40)
+        self.team_info.grid(row=9, column=1, columnspan=2, sticky='e')
 
         self.teams_container.bind("<<ListboxSelect>>", self.on_select_list)
 
@@ -77,11 +102,27 @@ class TeamInfo(tk.Frame):
 
     def on_select_list(self, event):
         selected_index = self.teams_container.curselection()
-        if selected_index and self.teams_container.get(selected_index[0]) not in self.selected_teams.get(0, tk.END):
-            self.selected_teams.insert(tk.END, self.teams_container.get(selected_index))
+        # if selected_index and self.teams_container.get(selected_index[0]) not in self.selected_teams.get(0, tk.END):
+        #     self.selected_teams.insert(tk.END, self.teams_container.get(selected_index))
+        for i in TeamInfo.teams:
+            print(i)
+            if str(i) == self.teams_container.get(selected_index):
+                self.team_info.insert(tk.END, f"Name: {i.name}")
+                self.team_info.insert(tk.END, f"Abbreviated Name: {i.abv_name}")
+                self.team_info.insert(tk.END, f"Year founded: {i.year}")
+                self.team_info.insert(tk.END, f"Colors: {i.colors}")
     
     def add_team(self):
-        new_team = Team(name=self.name.get())
+        inputs = [self.name, self.abbrv_name, self.year, self.colors]
+        errors = [self.name_error, self.abv_error, self.year_error, self.colors_error]
+        for i in errors:
+            i.config(text="")
+        for i, input in enumerate(inputs):
+            if input.get() == "":
+                errors[i].config(text="This cannot be left blank")
+                return
+
+        new_team = Team(name=self.name.get(), abv_name=self.abbrv_name.get(), year=self.year.get(), colors=self.colors.get())
         for i in TeamInfo.teams:
             if i is new_team:
                 return
