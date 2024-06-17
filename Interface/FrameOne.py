@@ -1,4 +1,5 @@
 import sys
+import json
 import tkinter as tk
 from TeamInfo import TeamInfo
 
@@ -6,6 +7,7 @@ sys.path.append('..')
 from classes import Competition
 
 class FrameOne(tk.Frame):
+    competitions = []
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -92,17 +94,33 @@ class FrameOne(tk.Frame):
         self.controller.bind("<Configure>", self.update_dashboard_width)
 
     def create_competition(self):
+        inputs = [self.name, self.abbrv_name, self.year, self.colors]
+        errors = [self.name_error, self.abv_error, self.year_error, self.colors_error]
+        
+        for i, inputerror in enumerate(inputs):
+            for x in errors:
+                x.config(text="")
+            if inputerror.get() == "":
+                errors[i].config(text="This field cannot be left blank")
+                return
+
+        with open('storage.json', 'w') as f:
+            objs = {}
+            for i in TeamInfo.teams:
+                key = 'Competition.' + i.name 
+                objs[key] = i.__dict__
+            json.dump(objs, f)
         teams = []
         for i in TeamInfo.teams:
-            if i in self.selected_teams.get(0, tk.END):
+            if str(i) in self.selected_teams.get(0, tk.END):
                 teams.append(i)
         try:
-            comp = Competition(self.name.get(), 'tournament', self.totalTeam.get(), teams)
+            comp = Competition(self.name.get(), 'tournament', int(self.totalTeam.get()), teams)
             print(comp)
+            print(comp.teams)
         except Exception as e:
             self.competition_error.config(text=e)
 
-        self.controller.show_frame("Welcome")
 
     def update_teams(self):
         # Clear the listbox

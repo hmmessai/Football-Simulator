@@ -8,7 +8,7 @@ import json
 
 sys.path.append('')
 sys.path.append('..')
-from classes import Team
+from classes import Team, Competition
 from FrameOne import FrameOne
 from Welcome import Welcome
 from TeamInfo import TeamInfo
@@ -74,6 +74,7 @@ class MainApplication(tk.Tk):
 
     def load_storage(self):
         teams = {}
+        competition = {}
 
         try:
             with open('storage.json', 'r+', encoding='utf-8') as f:
@@ -81,7 +82,10 @@ class MainApplication(tk.Tk):
                 if content:
                     data = json.loads(content)
                     for k, v in data.items():
-                        teams[k] = Team(**v)
+                        if k.split('.')[0] == 'Team':
+                            teams[k] = Team(**v)
+                        elif k.split('.')[1] == 'Competition':
+                            competition[k] = Competition(**v)
                     print("Loaded teams from JSON:", teams)  # Debug statement
 
             for team in teams.values():
