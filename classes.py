@@ -101,7 +101,8 @@ class Competition:
         if len(self.matches) != 0:
             for match in self.matches:
                 if match.home == team or match.away == team:
-                    matches.append(match)
+                    if match.done == False:
+                        matches.append(match)
         else:
             print(f"No matches for {team}")
         return matches
@@ -124,9 +125,11 @@ class Competition:
             error = False
             i = 0
             totalmatches = self.totalTeams * 2 -2
-            available_matches = self.teams[:]
             team = self.teams[count % self.totalTeams]
-            match = self.getMatches(team)[count % totalmatches]
+            try:
+                match = self.getMatches(team)[count % totalmatches]
+            except IndexError:
+                break
             
             while True:
                 if not Competition._check_validity(match, thisWeekMatches):

@@ -4,8 +4,11 @@ from tkinter import ttk
 from tkinter import messagebox
 # from screeninfo import get_monitors
 import sys
+import json
 
 sys.path.append('')
+sys.path.append('..')
+from classes import Team
 from FrameOne import FrameOne
 from Welcome import Welcome
 from TeamInfo import TeamInfo
@@ -44,7 +47,8 @@ class MainApplication(tk.Tk):
         self.create_frames()
         
         # Show initial frame
-        self.show_frame("TeamInfo")
+        self.load_storage()
+        self.show_frame("Welcome")
     
     def create_frames(self):
         # Create instances of frames and store them in the frames dictionary
@@ -64,6 +68,30 @@ class MainApplication(tk.Tk):
         # Bring the frame to the front
         frame = self.frames[frame_name]
         frame.tkraise()
+
+        if frame_name == "FrameOne":
+            frame.update_teams()
+
+    def load_storage(self):
+        teams = {}
+
+        try:
+            with open('storage.json', 'r+', encoding='utf-8') as f:
+                content = f.read().strip()
+                if content:
+                    data = json.loads(content)
+                    for k, v in data.items():
+                        teams[k] = Team(**v)
+                    print("Loaded teams from JSON:", teams)  # Debug statement
+
+            for team in teams.values():
+                if team not in TeamInfo.teams:
+                    TeamInfo.teams.append(team)
+                    print("Added team to TeamInfo.teams:", team)  # Debug statement
+
+            print("Final TeamInfo.teams:", TeamInfo.teams)  # Debug statement
+        except Exception as e:
+            print(f"Error loading storage: {e}")
 
 
 if __name__ == "__main__":
