@@ -1,5 +1,9 @@
+import sys
 import tkinter as tk
 from TeamInfo import TeamInfo
+
+sys.path.append('..')
+from classes import Competition
 
 class FrameOne(tk.Frame):
     def __init__(self, parent, controller):
@@ -42,52 +46,63 @@ class FrameOne(tk.Frame):
                            command=lambda: controller.show_frame("TeamInfo"))
         button.grid(row=1, column=1)
 
-        name_label = tk.Label(self.content, text="Name of team")
+        name_label = tk.Label(self.content, text="Name of competition")
         name_label.grid(row=2, column=0, pady=10, padx=10)
         self.name = tk.Entry(self.content, width=40)
         self.name.grid(row=2, column=1, sticky='w')
         self.name_error = tk.Label(self.content)
         self.name_error.grid(row=2, column=2, sticky='w')
 
-        abbr_label = tk.Label(self.content, text="Abbreviated Name")
-        abbr_label.grid(row=3, column=0, pady=10, padx=10)
-        self.abbrv_name = tk.Entry(self.content)
-        self.abbrv_name.grid(row=3, column=1, sticky='w')
-        self.abv_error = tk.Label(self.content)
-        self.abv_error.grid(row=3, column=2, sticky='w')
 
-        year_label = tk.Label(self.content, text="Year founded")
+        year_label = tk.Label(self.content, text="Number of teams")
         year_label.grid(row=4, column=0, pady=10, padx=10)
-        self.year = tk.Entry(self.content)
-        self.year.grid(row=4, column=1, sticky='w')
-        self.year_error = tk.Label(self.content)
-        self.year_error.grid(row=4, column=2, sticky='w')
+        self.totalTeam = tk.Entry(self.content)
+        self.totalTeam.grid(row=4, column=1, sticky='w')
+        self.totalTeam_error = tk.Label(self.content)
+        self.totalTeam_error.grid(row=4, column=2, sticky='w')
 
-        colors_label = tk.Label(self.content, text="Colors")
-        colors_label.grid(row=5, column=0, pady=10, padx=10)
-        self.colors = tk.Entry(self.content)
-        self.colors.grid(row=5, column=1, sticky='w')
-        self.colors_error = tk.Label(self.content)
-        self.colors_error.grid(row=5, column=2, sticky='w')
-        
-        add_team_btn = tk.Button(self.content, text="Add Team", 
-                           command=None)
-
+        instruction_label = tk.Label(self.content, text="Select the teams you want participating in your competition. To remove the team selected it again", font=('Arial', 12))
+        instruction_label.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky='nsew')
 
         all_teams_label = tk.Label(self.content, text="All Teams", font=('Arial', 15))
         all_teams_label.grid(row=8, column=0, padx=10, pady=10, columnspan=2, sticky='w')
         self.teams_container = tk.Listbox(self.content, width=30)
-        self.teams_container.grid(row=9, column=0, columnspan=2, padx=10, pady=10, sticky='w')
+        self.teams_container.grid(row=9, column=0, padx=10, pady=10, sticky='w')
         self.update_teams()
 
+        arrow_label = tk.Label(self.content, text="===>", font=('Arial', 10))
+        arrow_label.grid(row=9, column=1, sticky='w')
+        arrow_label.config(wraplength=600)
+
         selected_teams_label = tk.Label(self.content, text="Selected Teams", font=('Arial', 15))
-        selected_teams_label.grid(row=8, column=1, padx=10, pady=10, columnspan=2, sticky='w')
+        selected_teams_label.grid(row=8, column=2, padx=10, pady=10, columnspan=2, sticky='w')
         self.selected_teams = tk.Listbox(self.content, width=30)
-        self.selected_teams.grid(row=9, column=1, columnspan=2, sticky='e')
+        self.selected_teams.grid(row=9, column=2, sticky='w')
         self.selected_teams.config(background="black", foreground="white")
+
+        self.competition_error = tk.Label(self.content)
+        self.competition_error.grid(row=10, column=0, sticky='nsew')
+
+        add_team_btn = tk.Button(self.content, text="Create Competition", 
+                           command=self.create_competition)
+        add_team_btn.grid(row=10, column=1, sticky='w')
+        
 
         self.teams_container.bind("<<ListboxSelect>>", self.on_select_list)
         self.controller.bind("<Configure>", self.update_dashboard_width)
+
+    def create_competition(self):
+        teams = []
+        for i in TeamInfo.teams:
+            if i in self.selected_teams.get(0, tk.END):
+                teams.append(i)
+        try:
+            comp = Competition(self.name.get(), 'tournament', self.totalTeam.get(), teams)
+            print(comp)
+        except Exception as e:
+            self.competition_error.config(text=e)
+
+        self.controller.show_frame("Welcome")
 
     def update_teams(self):
         # Clear the listbox

@@ -140,5 +140,6 @@ class TeamInfo(tk.Frame):
         with open('storage.json', 'w') as f:
             objs = {}
             for i in TeamInfo.teams:
-                objs[i.name] = i.__dict__
+                key = 'Team.' + i.name 
+                objs[key] = i.__dict__
             json.dump(objs, f)

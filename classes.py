@@ -46,7 +46,8 @@ class Team(Base):
         return f"{self.name} ({self.abv_name})"
 
 class Competition:
-    def __init__(self, type, totalTeams, teams):
+    def __init__(self, name, type, totalTeams, teams):
+        self.name = name
         self.type = type
         self.totalTeams = totalTeams
         self.teamsCount = 0
@@ -160,6 +161,9 @@ class Competition:
             if match is m or match.away == m.home or match.home == m.away or match.home == m.home or match.away == m.away:
                 return False
         return True
+    
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.totalTeams})"
 
 
 class Score:
