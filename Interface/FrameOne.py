@@ -128,7 +128,10 @@ class FrameOne(tk.Frame):
                 inner_dict = {}
                 for k, v in i.__dict__.items():
                     if k == 'teams':
-                        inner_dict[k] = str(v)
+                        teams = []
+                        for i in v:
+                            teams.append(i.__dict__)
+                        inner_dict[k] = teams
                     else:
                         inner_dict[k] = v
                 objs[key] = inner_dict
