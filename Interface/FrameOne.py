@@ -82,8 +82,9 @@ class FrameOne(tk.Frame):
         self.selected_teams.grid(row=9, column=2, sticky='w')
         self.selected_teams.config(background="black", foreground="white")
 
-        self.competition_error = tk.Label(self.content)
+        self.competition_error = tk.Label(self.content, text="")
         self.competition_error.grid(row=10, column=0, sticky='nsew')
+        self.competition_error.config(wraplength=200)
 
         add_team_btn = tk.Button(self.content, text="Create Competition", 
                            command=self.create_competition)
@@ -94,8 +95,8 @@ class FrameOne(tk.Frame):
         self.controller.bind("<Configure>", self.update_dashboard_width)
 
     def create_competition(self):
-        inputs = [self.name, self.abbrv_name, self.year, self.colors]
-        errors = [self.name_error, self.abv_error, self.year_error, self.colors_error]
+        inputs = [self.name, self.totalTeam]
+        errors = [self.name_error, self.totalTeam_error]
         
         for i, inputerror in enumerate(inputs):
             for x in errors:
@@ -103,13 +104,10 @@ class FrameOne(tk.Frame):
             if inputerror.get() == "":
                 errors[i].config(text="This field cannot be left blank")
                 return
+            
+        if len(self.selected_teams.get(0, tk.END)) == 0 or len(self.selected_teams.get(0, tk.END)) > int(self.totalTeam.get()):
+            self.competition_error.config(text="The number of participant teams is not correct please adjust it according to the Total teams number you entered")
 
-        with open('storage.json', 'w') as f:
-            objs = {}
-            for i in TeamInfo.teams:
-                key = 'Competition.' + i.name 
-                objs[key] = i.__dict__
-            json.dump(objs, f)
         teams = []
         for i in TeamInfo.teams:
             if str(i) in self.selected_teams.get(0, tk.END):
@@ -118,8 +116,24 @@ class FrameOne(tk.Frame):
             comp = Competition(self.name.get(), 'tournament', int(self.totalTeam.get()), teams)
             print(comp)
             print(comp.teams)
+            FrameOne.competitions.append(comp)
         except Exception as e:
             self.competition_error.config(text=e)
+
+        with open('storage.json', 'r') as f:
+            objs = json.load(f)
+        with open('storage.json', 'w') as f:
+            for i in FrameOne.competitions:
+                key = 'Competition.' + i.name
+                inner_dict = {}
+                for k, v in i.__dict__.items():
+                    if k == 'teams':
+                        inner_dict[k] = str(v)
+                    else:
+                        inner_dict[k] = v
+                objs[key] = inner_dict
+
+            json.dump(objs, f, indent=4)
 
 
     def update_teams(self):

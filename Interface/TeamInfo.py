@@ -1,5 +1,6 @@
 import tkinter as tk
 import sys
+import os
 import json
 sys.path.append('..')
 from classes import Team
@@ -137,9 +138,20 @@ class TeamInfo(tk.Frame):
             if i is new_team:
                 return
         TeamInfo.teams.append(new_team)
+
+        if os.path.exists("storage.json"):
+            # Try to load existing data
+            try:
+                with open("storage.json", 'r') as file:
+                    data = json.load(file)
+            except json.JSONDecodeError:
+                # Handle case where file is empty or not valid JSON
+                data = {}
+        # Create the file if it does not exist
         with open('storage.json', 'w') as f:
-            objs = {}
             for i in TeamInfo.teams:
                 key = 'Team.' + i.name 
-                objs[key] = i.__dict__
-            json.dump(objs, f)
+                data[key] = i.__dict__
+            json.dump(data, f, indent=4)
+
+        
