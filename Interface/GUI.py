@@ -34,7 +34,6 @@ class MainApplication(tk.Tk):
         
         self.title("Football Simulation")
         self.geometry(f"{window_width}x{window_height}")
-        self.config(background="#bd3102")
         
         # Create a container frame
         self.container = tk.Frame(self)

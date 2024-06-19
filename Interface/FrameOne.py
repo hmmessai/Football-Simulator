@@ -12,32 +12,22 @@ class FrameOne(tk.Frame):
         super().__init__(parent)
         self.controller = controller
 
+        custom_color = "#008080"
+
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        
 
         ##Dashboard##
-        self.dashboard = tk.Frame(self, bd=2, relief="groove", highlightbackground="black")
-        self.dashboard.grid(row=0, column=0, sticky='nsew')
-        self.dashboard.grid_propagate(False)
-
-        label1 = tk.Label(self.dashboard, text="Label1")
-        label1.grid(row=0, column=0, sticky='nw')
-
-        label2 = tk.Label(self.dashboard, text="Label2")
-        label2.grid(row=1, column=0, sticky='nsew')
-
-        label3 = tk.Label(self.dashboard, text="Label3")
-        label3.grid(row=2, column=0, sticky='nsew')
-
-        label4 = tk.Label(self.dashboard, text="Label4")
-        label4.grid(row=3, column=0, sticky='nsew')
+        
 
         ##Content##
         self.content = tk.Frame(self)
-        self.content.grid(row=0, column=1, sticky="nw")
-        label = tk.Label(self.content, text="Competition Registration", font=('Arial', 22))
+        self.content.grid(row=0, column=1, sticky="nwse")
+        self.content.config(background= custom_color)
+        label = tk.Label(self.content, text="Competition Registration", font=('Arial', 22), bg=custom_color)
         label.grid(row=0, column=0, pady=10, padx=10)
         
         button = tk.Button(self.content, text="Go to Frame 1", 
@@ -48,41 +38,41 @@ class FrameOne(tk.Frame):
                            command=lambda: controller.show_frame("TeamInfo"))
         button.grid(row=1, column=1)
 
-        name_label = tk.Label(self.content, text="Name of competition")
+        name_label = tk.Label(self.content, text="Name of competition", bg=custom_color)
         name_label.grid(row=2, column=0, pady=10, padx=10)
         self.name = tk.Entry(self.content, width=40)
         self.name.grid(row=2, column=1, sticky='w')
-        self.name_error = tk.Label(self.content)
+        self.name_error = tk.Label(self.content, bg=custom_color)
         self.name_error.grid(row=2, column=2, sticky='w')
 
 
-        year_label = tk.Label(self.content, text="Number of teams")
+        year_label = tk.Label(self.content, text="Number of teams", bg=custom_color)
         year_label.grid(row=4, column=0, pady=10, padx=10)
         self.totalTeam = tk.Entry(self.content)
         self.totalTeam.grid(row=4, column=1, sticky='w')
-        self.totalTeam_error = tk.Label(self.content)
+        self.totalTeam_error = tk.Label(self.content, bg=custom_color)
         self.totalTeam_error.grid(row=4, column=2, sticky='w')
 
-        instruction_label = tk.Label(self.content, text="Select the teams you want participating in your competition. To remove the team selected it again", font=('Arial', 12))
+        instruction_label = tk.Label(self.content, bg=custom_color, text="Select the teams you want participating in your competition. To remove the team selected it again", font=('Arial', 12))
         instruction_label.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky='nsew')
 
-        all_teams_label = tk.Label(self.content, text="All Teams", font=('Arial', 15))
+        all_teams_label = tk.Label(self.content, bg=custom_color, text="All Teams", font=('Arial', 15))
         all_teams_label.grid(row=8, column=0, padx=10, pady=10, columnspan=2, sticky='w')
         self.teams_container = tk.Listbox(self.content, width=30)
         self.teams_container.grid(row=9, column=0, padx=10, pady=10, sticky='w')
         self.update_teams()
 
-        arrow_label = tk.Label(self.content, text="===>", font=('Arial', 10))
+        arrow_label = tk.Label(self.content, text="===>", bg=custom_color, font=('Arial', 10))
         arrow_label.grid(row=9, column=1, sticky='w')
         arrow_label.config(wraplength=600)
 
-        selected_teams_label = tk.Label(self.content, text="Selected Teams", font=('Arial', 15))
+        selected_teams_label = tk.Label(self.content, text="Selected Teams", bg=custom_color, font=('Arial', 15))
         selected_teams_label.grid(row=8, column=2, padx=10, pady=10, columnspan=2, sticky='w')
         self.selected_teams = tk.Listbox(self.content, width=30)
         self.selected_teams.grid(row=9, column=2, sticky='w')
         self.selected_teams.config(background="black", foreground="white")
 
-        self.competition_error = tk.Label(self.content, text="")
+        self.competition_error = tk.Label(self.content, bg=custom_color, text="")
         self.competition_error.grid(row=10, column=0, sticky='nsew')
         self.competition_error.config(wraplength=200)
 
