@@ -6,14 +6,14 @@ class Welcome(tk.Frame):
         self.controller = controller
         
         label = tk.Label(self, text="Welcome to Football Simulator", font=('Arial', 20), foreground="blue")
-        label.grid(column=0, row=0, pady=10, padx=10)
+        label.grid(column=0, row=0, pady=10, padx=10, sticky='nswe')
 
         self.content = tk.Label(self, text="This is a rough simulation of the game we all love and cherish. To get started, Add a competition name and procced to the next steps.", font=('Arial', 18))
-        self.content.grid(row=1, column=0, pady=10, padx=10)
+        self.content.grid(row=1, column=0, pady=10, padx=10, sticky='nsew')
 
         button = tk.Button(self, text="Go to Frame One", 
                            command=lambda: controller.show_frame("FrameOne"))
-        button.grid(column=0, row=2, padx=10, pady=10, sticky='se')
+        button.grid(column=0, row=2, padx=10, pady=10, sticky='nsew')
 
         self.controller.bind("<Configure>", self.update_dashboard_width)
 

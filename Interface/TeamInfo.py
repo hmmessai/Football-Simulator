@@ -23,7 +23,7 @@ class TeamInfo(tk.Frame):
 
         
         self.content = tk.Frame(self)
-        self.content.grid(row=1, column=1, sticky="nw")
+        self.content.grid(row=1, column=0, sticky="nw")
 
         title = tk.Label(self.content, text="Team Registration", font=('Arial', 20))
         title.grid(row=0, column=0, columnspan=5)

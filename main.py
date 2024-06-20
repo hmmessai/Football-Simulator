@@ -5,7 +5,7 @@ team = Team()
 team3 = Team(name='Liverpool')
 team2 = Team()
 teams = [team, team2, team3]
-comp = Competition('tournament', 20, teams)
+comp = Competition("Premier League", 'tournament', 20, teams)
 
 
 print(comp.getMatches(team))
