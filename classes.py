@@ -45,16 +45,28 @@ class Team(Base):
     def __repr__(self) -> str:
         return f"{self.name} ({self.abv_name})"
 
-class Competition:
-    def __init__(self, name, type, totalTeams, teams):
-        self.name = name
-        self.type = type
-        self.totalTeams = totalTeams
+class Competition(Base):
+
+    _instances = []
+
+    def __new__(cls, *args, **kwargs):
+        for instance in cls._instances:
+            if instance._compare(args, kwargs):
+                raise ValueError('Competition with the same name already exists')
+        instance = super(Competition, cls).__new__(cls)
+        cls._instances.append(instance)
+        return instance
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = args[0]
+        self.type = args[1]
+        self.totalTeams = args[2]
         self.teamsCount = 0
         self.teams = []
         self.matches = []
-        if teams and isinstance(teams, list):
-            for team in teams:
+        if args[3] and isinstance(args[3], list):
+            for team in args[3]:
                 if not isinstance(team, Team):
                     raise TeamAdditionError(f"Team {team} is not an instance of the Team class.")
                 elif self.teamsCount >= self.totalTeams:
@@ -161,6 +173,9 @@ class Competition:
             if match is m or match.away == m.home or match.home == m.away or match.home == m.home or match.away == m.away:
                 return False
         return True
+    
+    def _compare(self, args, kwargs):
+        return self.name == args[0]
     
     def __repr__(self) -> str:
         return f"{self.name} ({self.totalTeams})"
