@@ -29,6 +29,7 @@ class FrameOne(tk.Frame):
 
         self.clear_frame()
         self.content.grid_columnconfigure(1, weight=0)
+        self.content.grid_columnconfigure(2, weight=0)
         # Buttons
         create_button = tk.Button(self.content, text="Create Competition", 
                                   font=self.controller.normal_font, 
@@ -47,7 +48,7 @@ class FrameOne(tk.Frame):
                                   bg='black', 
                                   foreground='white', 
                                   borderwidth=0, 
-                                  highlightthickness=0)
+                                  command=self.view_all_competitions)
         browse_button.grid(row=1, column=0, padx=5, pady=10)
 
 
@@ -118,6 +119,35 @@ class FrameOne(tk.Frame):
         done_button.grid(row=11, column=1, padx=40, pady=20, sticky='e')
 
         self.teams_select_listbox.bind("<<ListboxSelect>>", self.on_select_list)
+
+
+    def view_all_competitions(self):
+        self.clear_frame()
+
+        show_buttons = [
+            tk.Button(self.content, text="View", bg='#5b648f', foreground='white', borderwidth=0, padx=20),
+            tk.Button(self.content, text="Edit", bg='#5b648f', foreground='white', borderwidth=0, padx=20)]
+        
+        def view_options(row):
+            self.content.grid_columnconfigure(1, weight=1)
+            self.content.grid_columnconfigure(2, weight=1)
+            for i, but in enumerate(show_buttons):
+                but.grid(row=row - 1, column=i + 1, sticky='w', padx=0, pady=5)
+
+        back_button = tk.Button(self.content, text="Go Back", bg='black', foreground='white', command=self.main_select)
+        back_button.grid(row=1, column=0, padx=40, pady=5, sticky='w')
+
+        self.content.grid_columnconfigure(1, weight=0)
+        for i, comp in enumerate(FrameOne.competitions):
+            button = tk.Button(self.content, padx=20, pady=5, 
+                               bg='black',
+                               foreground='white',
+                               font=self.controller.normal_font,
+                               text=comp.name,
+                               borderwidth=0,
+                               command=lambda i=i: view_options(i + 3))
+            button.grid(row=i+2, column=0, padx=5, pady=5)
+
 
 
     def store_competition(self):

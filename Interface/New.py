@@ -112,7 +112,7 @@ class MainApp(tk.Tk):
 
     def load_storage(self):
         teams = {}
-        competition = {}
+        competitions = {}
 
         try:
             with open('storage.json', 'r+', encoding='utf-8') as f:
@@ -120,16 +120,33 @@ class MainApp(tk.Tk):
                 if content:
                     data = json.loads(content)
                     for k, v in data.items():
-                        if k.split('.')[0] == 'Team':
-                            teams[k] = Team(**v)
-                        elif k.split('.')[1] == 'Competition':
-                            competition[k] = Competition(**v)
-                    print("Loaded teams from JSON:", teams)  # Debug statement
+                        try:
+                            key_parts = k.strip().split('.', 1)
+                            if len(key_parts) >= 2:
+                                entity_type = key_parts[0]
+                                identifier = '.'.join(key_parts[1:])
+                                if entity_type == 'Team':
+                                    teams[k] = Team(**v)
+                                elif entity_type == 'Competition':
+                                    this_comp_teams = []
+                                    for team_info in v['teams']:
+                                        tt = Team(team_info)
+                                        this_comp_teams.append(tt)
+                                    competitions[k] = Competition(v['name'], v['type'], v['totalTeams'], this_comp_teams, country=v['country'])
+                            else:
+                                print(f"Ignoring invalid key format: {k}")
+                        except Exception as e:
+                            print(f"Error processing key {k}: {e}")
 
             for team in teams.values():
                 if team not in TeamInfo.teams:
                     TeamInfo.teams.append(team)
-                    print("Added team to TeamInfo.teams:", team)  # Debug statement
+                    print("Added team to TeamInfo.teams:", team)
+                    
+            for competition in competitions.values():
+                if competition not in FrameOne.competitions:
+                    FrameOne.competitions.append(competition)
+                    print("Added competition to Competition:", competition)  # Debug statement
 
             print("Final TeamInfo.teams:", TeamInfo.teams)  # Debug statement
         except Exception as e:
