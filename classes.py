@@ -167,6 +167,10 @@ class Competition(Base):
 
         return thisWeekMatches
     
+    @classmethod
+    def clear(cls):
+        Competition._instances.clear()
+    
 
     def _check_validity(match, matches):
         for m in matches:

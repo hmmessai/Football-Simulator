@@ -94,7 +94,6 @@ class MainApp(tk.Tk):
             frame.place(relwidth=1, relheight=1)
     
     def show_frame(self, frame_name):
-        # Bring the frame to the front
         frame = self.frames[frame_name]
         for key, button in self.buttons.items():
             if key != frame_name:
@@ -110,7 +109,7 @@ class MainApp(tk.Tk):
         reference.config(bg='white', foreground="black")
         self.show_frame(name)
 
-    def load_storage(self):
+    def load_storage(self, edit=False):
         teams = {}
         competitions = {}
 
@@ -130,8 +129,10 @@ class MainApp(tk.Tk):
                                 elif entity_type == 'Competition':
                                     this_comp_teams = []
                                     for team_info in v['teams']:
-                                        tt = Team(team_info)
+                                        tt = Team(**team_info)
                                         this_comp_teams.append(tt)
+                                    if edit:
+                                        Competition.clear()
                                     competitions[k] = Competition(v['name'], v['type'], v['totalTeams'], this_comp_teams, country=v['country'])
                             else:
                                 print(f"Ignoring invalid key format: {k}")
@@ -144,9 +145,13 @@ class MainApp(tk.Tk):
                     print("Added team to TeamInfo.teams:", team)
                     
             for competition in competitions.values():
+                for comp in FrameOne.competitions:
+                    if competition.name == comp.name and edit is True:
+                        FrameOne.competitions.remove(comp)
                 if competition not in FrameOne.competitions:
                     FrameOne.competitions.append(competition)
                     print("Added competition to Competition:", competition)  # Debug statement
+                print(FrameOne.competitions)
 
             print("Final TeamInfo.teams:", TeamInfo.teams)  # Debug statement
         except Exception as e:
