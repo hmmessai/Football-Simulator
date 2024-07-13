@@ -168,11 +168,14 @@ class FrameOne(tk.Frame):
         print(objs)
         key_to_delete = f"Competition.{comp.name}"
         del objs[key_to_delete]
+        for competition in FrameOne.competitions:
+            if competition.name == comp.name:
+                FrameOne.competitions.remove(competition)
 
         with open('storage.json', 'w') as f:
             json.dump(objs, f, indent=4)
 
-        self.controller.load_storage()
+        self.controller.load_storage(edit=True)
         self.view_all_competitions()
 
     def edit_competition(self, comp):
